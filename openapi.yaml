@@ -1,25 +1,59 @@
 openapi: 3.0.3
+
 info:
   title: Products Catalog Mobile API
   version: "1.0.0"
   description: Products catalog response for mobile application
 
+servers:
+  - url: https://your-salesforce-domain/services/apexrest
+
 paths:
-  /mobile/catalog/products:
+  /mobile/catalog:
     get:
       summary: Get products catalog
+      description: |
+        Returns product catalog by chunks or single product by external ID.
+        Only one parameter should be provided.
+      parameters:
+        - name: chunkNumber
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Chunk number for pagination
+        - name: productExternalId
+          in: query
+          required: false
+          schema:
+            type: string
+          description: External ID of product
       responses:
         '200':
           description: Successful response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Product'
+                oneOf:
+                  - $ref: '#/components/schemas/ProductChunkWrapper'
+                  - $ref: '#/components/schemas/Product'
+        '400':
+          description: Validation error
 
 components:
   schemas:
+
+    ProductChunkWrapper:
+      type: object
+      properties:
+        totalChunks:
+          type: integer
+        chunkNumber:
+          type: integer
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
 
     Product:
       type: object
@@ -171,59 +205,6 @@ components:
         disposalRecommendations:
           type: string
         prohibitedUse:
-          type: string
-
-    SeedCharacteristics:
-      type: object
-      properties:
-        oiliness:
-          type: number
-          format: double
-        recommendedDensity:
-          type: string
-        grainType:
-          type: string
-        growingTechnology:
-          type: string
-        potentialYield:
-          type: string
-        seedHybrid:
-          type: string
-        sowingTerms:
-          type: string
-        fao:
-          type: string
-
-    PesticideCharacteristics:
-      type: object
-      properties:
-        pesticideCategories:
-          type: string
-
-    FertilizerCharacteristics:
-      type: object
-      properties:
-        fertilizerGroup:
-          type: string
-        fertilizerMineralGroup:
-          type: string
-        fertilizerTopGroup:
-          type: string
-        processingPurpose:
-          type: string
-
-    FuelCharacteristics:
-      type: object
-      properties:
-        fuelGroup:
-          type: string
-        classificationBySeason:
-          type: string
-        qualityStandard:
-          type: string
-        qualityIndicators:
-          type: string
-        shippingAndStoragePrecautions:
           type: string
 
     ChildProduct:

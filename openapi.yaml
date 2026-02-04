@@ -1,0 +1,264 @@
+openapi: 3.0.3
+info:
+  title: Products Catalog Mobile API
+  version: "1.0.0"
+  description: Products catalog response for mobile application
+
+paths:
+  /mobile/catalog/products:
+    get:
+      summary: Get products catalog
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+components:
+  schemas:
+
+    Product:
+      type: object
+      properties:
+        active:
+          type: boolean
+        name:
+          type: string
+        productExternalId:
+          type: string
+        category:
+          type: string
+        productDescription:
+          type: string
+        productBenefits:
+          type: string
+        compatibility:
+          type: string
+        preparativeForm:
+          type: string
+        producingCountry:
+          type: string
+        transportationHazardRate:
+          type: string
+        substanceConcentration:
+          type: string
+
+        productBrand:
+          $ref: '#/components/schemas/BrandInfo'
+
+        registrationInfo:
+          $ref: '#/components/schemas/RegistrationInfo'
+
+        cultures:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapper'
+
+        soil:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapper'
+
+        weeds:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
+
+        pests:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
+
+        diseases:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
+
+        purposes:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapper'
+
+        alsoBoughtWithThisProduct:
+          type: array
+          items:
+            $ref: '#/components/schemas/GenericWrapper'
+
+        childProducts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChildProduct'
+
+        seedInfo:
+          $ref: '#/components/schemas/SeedCharacteristics'
+
+        pesticideInfo:
+          $ref: '#/components/schemas/PesticideCharacteristics'
+
+        fertilizerInfo:
+          $ref: '#/components/schemas/FertilizerCharacteristics'
+
+        fuelInfo:
+          $ref: '#/components/schemas/FuelCharacteristics'
+
+        usagePrecautions:
+          $ref: '#/components/schemas/UsagePrecautionsInfo'
+
+    GenericWrapper:
+      type: object
+      properties:
+        name:
+          type: string
+        externalId:
+          type: string
+
+    GenericWrapperForGrowthPhases:
+      type: object
+      properties:
+        name:
+          type: string
+        externalId:
+          type: string
+        resistanceLevel:
+          type: string
+
+    BrandInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        externalId:
+          type: string
+        country:
+          type: string
+
+    RegistrationInfo:
+      type: object
+      properties:
+        applicant:
+          $ref: '#/components/schemas/GenericWrapper'
+        owner:
+          $ref: '#/components/schemas/GenericWrapper'
+        applicationNumber:
+          type: string
+        applicationSeries:
+          type: string
+        registrationYear:
+          type: string
+        documentExpirationDate:
+          type: string
+          format: date
+
+    UsagePrecautionsInfo:
+      type: object
+      properties:
+        USAID:
+          type: boolean
+        hazardClass:
+          type: string
+        recommendationForUse:
+          type: string
+        beesHazardClass:
+          type: string
+        beesRecommendationForUse:
+          type: string
+        cargoGroup:
+          type: string
+        disposalRecommendations:
+          type: string
+        prohibitedUse:
+          type: string
+
+    SeedCharacteristics:
+      type: object
+      properties:
+        oiliness:
+          type: number
+          format: double
+        recommendedDensity:
+          type: string
+        grainType:
+          type: string
+        growingTechnology:
+          type: string
+        potentialYield:
+          type: string
+        seedHybrid:
+          type: string
+        sowingTerms:
+          type: string
+        fao:
+          type: string
+
+    PesticideCharacteristics:
+      type: object
+      properties:
+        pesticideCategories:
+          type: string
+
+    FertilizerCharacteristics:
+      type: object
+      properties:
+        fertilizerGroup:
+          type: string
+        fertilizerMineralGroup:
+          type: string
+        fertilizerTopGroup:
+          type: string
+        processingPurpose:
+          type: string
+
+    FuelCharacteristics:
+      type: object
+      properties:
+        fuelGroup:
+          type: string
+        classificationBySeason:
+          type: string
+        qualityStandard:
+          type: string
+        qualityIndicators:
+          type: string
+        shippingAndStoragePrecautions:
+          type: string
+
+    ChildProduct:
+      type: object
+      properties:
+        active:
+          type: boolean
+        name:
+          type: string
+        currencyPrice:
+          type: number
+          format: double
+        lowerCurrencyPrice:
+          type: number
+          format: double
+        exchangeIndex:
+          type: number
+          format: double
+        volume:
+          type: number
+          format: double
+        containerForm:
+          type: string
+        containerType:
+          type: string
+        productCurrency:
+          type: string
+        productExternalId:
+          type: string
+        warehouseStatus:
+          type: string
+        tbc:
+          type: boolean
+        vat:
+          type: number
+          format: double
+        country:
+          type: string

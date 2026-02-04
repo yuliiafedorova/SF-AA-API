@@ -7,38 +7,31 @@ info:
 
 servers:
   - url: https://your-salesforce-domain/services/apexrest
-
 paths:
-  /mobile/catalog:
+  /mobile/catalog/products:
     get:
       summary: Get products catalog
-      description: |
-        Returns product catalog by chunks or single product by external ID.
-        Only one parameter should be provided.
       parameters:
         - name: chunkNumber
           in: query
           required: false
           schema:
             type: integer
-          description: Chunk number for pagination
+          description: |
+            Chunk number for pagination.
+            REQUIRED if productExternalId is not provided.
+
         - name: productExternalId
           in: query
           required: false
           schema:
             type: string
-          description: External ID of product
+          description: |
+            External ID of product.
+            REQUIRED if chunkNumber is not provided.
       responses:
         '200':
           description: Successful response
-          content:
-            application/json:
-              schema:
-                oneOf:
-                  - $ref: '#/components/schemas/ProductChunkWrapper'
-                  - $ref: '#/components/schemas/Product'
-        '400':
-          description: Validation error
 
 components:
   schemas:

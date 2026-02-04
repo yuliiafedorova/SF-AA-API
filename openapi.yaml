@@ -1,14 +1,24 @@
 openapi: 3.0.3
 
 info:
-  title: Products Catalog Mobile API
+  title: Products Catalog API
   version: "1.0.0"
-  description: Products catalog response for mobile application
+  description: |
+    Документація ендпоінтів для роботи з каталогом продуктів.
+
+    **Особливості валідації:**
+    * Потрібно вказати **chunkNumber** або **productExternalId**. Можна передавати лише один параметр одночасно.
+    * **productExternalId** – ідентифікатор парент продукту. Використовується для отримання конкретного продукту та усіх його дочірніх записів .
+    * **chunkNumber** – номер блоку (чанку) продуктів для посторінкової передачі каталогу. Всі парент продукти нумеруються через поле `Product_Number__c`, і кожен чанк містить певну кількість продуктів, що визначається налаштуванням `Catalog_Service_Settings__c.Chunk_Size__c`.  
+      - **StartNumber** та **EndNumber** розраховуються автоматично для поточного чанку.  
+      - **TotalChunks** показує загальну кількість чанків, доступних для повного каталогу.
+    * Якщо параметр не передано або передано обидва параметри одночасно, повертається помилка.
+    * Повертаються лише активні продукти.
 
 servers:
-  - url: https://your-salesforce-domain/services/apexrest
+  - url: /services/apexrest
 paths:
-  /mobile/catalog/products:
+  /mobile/catalog/{productExternalId || chunkNumber}:
     get:
       summary: Get products catalog
       parameters:

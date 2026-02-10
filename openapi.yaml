@@ -1,248 +1,112 @@
 openapi: 3.0.3
-
 info:
-  title: Products Catalog API
-  version: "1.0.0"
-  description: |
-    Документація ендпоінтів для роботи з каталогом продуктів.
-
-    **Особливості валідації:**
-    * Потрібно вказати **chunkNumber** або **productExternalId**. Можна передавати лише один параметр одночасно.
-    * **productExternalId** – ідентифікатор парент продукту. Використовується для отримання конкретного продукту та усіх його дочірніх записів .
-    * **chunkNumber** – номер блоку (чанку) продуктів для посторінкової передачі каталогу. Всі парент продукти нумеруються через поле `Product_Number__c`, і кожен чанк містить певну кількість продуктів, що визначається налаштуванням `Catalog_Service_Settings__c.Chunk_Size__c`.  
-      - **StartNumber** та **EndNumber** розраховуються автоматично для поточного чанку.  
-      - **TotalChunks** показує загальну кількість чанків, доступних для повного каталогу.
-    * Якщо параметр не передано або передано обидва параметри одночасно, повертається помилка.
-    * Повертаються лише активні продукти.
-
+  title: Referral API
+  description: REST API для створення та оновлення кастомного об'єкта Referral__c у Salesforce
+  version: 1.0.0
 servers:
-  - url: /services/apexrest
+  - url: /services/apexrest/mobile/referral
+    description: Salesforce Apex REST endpoint
 paths:
-  /mobile/catalog/{productExternalId || chunkNumber}:
-    get:
-      summary: Get products catalog
-      parameters:
-        - name: chunkNumber
-          in: query
-          required: false
-          schema:
-            type: integer
-          description: |
-            Chunk number for pagination.
-            REQUIRED if productExternalId is not provided.
-
-        - name: productExternalId
-          in: query
-          required: false
-          schema:
-            type: string
-          description: |
-            External ID of product.
-            REQUIRED if chunkNumber is not provided.
+  /:
+    post:
+      summary: Створити новий Referral__c
+      description: Створює запис Referral__c для відстеження реферального запрошення
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferralRequest'
       responses:
         '200':
-          description: Successful response
-
+          description: Успішне створення запису
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralResponse'
+        '400':
+          description: Некоректні дані
+        '500':
+          description: Внутрішня помилка сервера
+    put:
+      summary: Оновити існуючий Referral__c
+      description: Оновлює запис Referral__c по External_Id__c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferralRequest'
+      responses:
+        '200':
+          description: Успішне оновлення запису
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralResponse'
+        '400':
+          description: Некоректні дані
+        '404':
+          description: Запис не знайдено
+        '500':
+          description: Внутрішня помилка сервера
 components:
   schemas:
-
-    ProductChunkWrapper:
+    ReferralRequest:
+      type: object
+      required:
+        - External_Id__c
+        - Sender__c
+        - Invited_User_FullName__c
+        - Invited_User_Phone__c
+        - Status__c
+      properties:
+        Sender__c:
+          type: string
+          description: Salesforce Id контакту, який відправив запрошення
+        Registered_User__c:
+          type: string
+          description: Salesforce Id контакту, який зареєструвався (опціонально)
+        Status__c:
+          type: string
+          enum:
+            - Sent
+            - Registered
+            - Rejected
+          description: Статус запрошення
+        Registration_Date__c:
+          type: string
+          format: date-time
+          description: Дата та час реєстрації користувача (опціонально)
+        Invitation_Date__c:
+          type: string
+          format: date-time
+          description: Дата та час відправки запрошення
+        Sender_Role__c:
+          type: string
+          description: Роль контакту Sender__c
+        Registered_User_Role__c:
+          type: string
+          description: Роль контакту Registered_User__c
+        External_Id__c:
+          type: string
+          description: Унікальний зовнішній ідентифікатор запису
+        Invited_User_FullName__c:
+          type: string
+          description: Повне ім'я запрошеного користувача
+        Invited_User_Phone__c:
+          type: string
+          description: Телефон запрошеного користувача
+        Name:
+          type: string
+          description: Авто-номер (генерується системою)
+    ReferralResponse:
       type: object
       properties:
-        totalChunks:
-          type: integer
-        chunkNumber:
-          type: integer
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-
-    Product:
-      type: object
-      properties:
-        active:
-          type: boolean
-        name:
+        status:
           type: string
-        productExternalId:
+          description: Статус відповіді
+          example: success
+        message:
           type: string
-        category:
-          type: string
-        productDescription:
-          type: string
-        productBenefits:
-          type: string
-        compatibility:
-          type: string
-        preparativeForm:
-          type: string
-        producingCountry:
-          type: string
-        transportationHazardRate:
-          type: string
-        substanceConcentration:
-          type: string
-
-        productBrand:
-          $ref: '#/components/schemas/BrandInfo'
-
-        registrationInfo:
-          $ref: '#/components/schemas/RegistrationInfo'
-
-        cultures:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapper'
-
-        soil:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapper'
-
-        weeds:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
-
-        pests:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
-
-        diseases:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapperForGrowthPhases'
-
-        purposes:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapper'
-
-        alsoBoughtWithThisProduct:
-          type: array
-          items:
-            $ref: '#/components/schemas/GenericWrapper'
-
-        childProducts:
-          type: array
-          items:
-            $ref: '#/components/schemas/ChildProduct'
-
-        seedInfo:
-          $ref: '#/components/schemas/SeedCharacteristics'
-
-        pesticideInfo:
-          $ref: '#/components/schemas/PesticideCharacteristics'
-
-        fertilizerInfo:
-          $ref: '#/components/schemas/FertilizerCharacteristics'
-
-        fuelInfo:
-          $ref: '#/components/schemas/FuelCharacteristics'
-
-        usagePrecautions:
-          $ref: '#/components/schemas/UsagePrecautionsInfo'
-
-    GenericWrapper:
-      type: object
-      properties:
-        name:
-          type: string
-        externalId:
-          type: string
-
-    GenericWrapperForGrowthPhases:
-      type: object
-      properties:
-        name:
-          type: string
-        externalId:
-          type: string
-        resistanceLevel:
-          type: string
-
-    BrandInfo:
-      type: object
-      properties:
-        name:
-          type: string
-        externalId:
-          type: string
-        country:
-          type: string
-
-    RegistrationInfo:
-      type: object
-      properties:
-        applicant:
-          $ref: '#/components/schemas/GenericWrapper'
-        owner:
-          $ref: '#/components/schemas/GenericWrapper'
-        applicationNumber:
-          type: string
-        applicationSeries:
-          type: string
-        registrationYear:
-          type: string
-        documentExpirationDate:
-          type: string
-          format: date
-
-    UsagePrecautionsInfo:
-      type: object
-      properties:
-        USAID:
-          type: boolean
-        hazardClass:
-          type: string
-        recommendationForUse:
-          type: string
-        beesHazardClass:
-          type: string
-        beesRecommendationForUse:
-          type: string
-        cargoGroup:
-          type: string
-        disposalRecommendations:
-          type: string
-        prohibitedUse:
-          type: string
-
-    ChildProduct:
-      type: object
-      properties:
-        active:
-          type: boolean
-        name:
-          type: string
-        currencyPrice:
-          type: number
-          format: double
-        lowerCurrencyPrice:
-          type: number
-          format: double
-        exchangeIndex:
-          type: number
-          format: double
-        volume:
-          type: number
-          format: double
-        containerForm:
-          type: string
-        containerType:
-          type: string
-        productCurrency:
-          type: string
-        productExternalId:
-          type: string
-        warehouseStatus:
-          type: string
-        tbc:
-          type: boolean
-        vat:
-          type: number
-          format: double
-        country:
-          type: string
+          description: Повідомлення про результат

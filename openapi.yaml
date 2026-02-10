@@ -1,17 +1,18 @@
 openapi: 3.0.3
 info:
   title: Referral API
-  description: REST API для створення та оновлення кастомного об'єкта Referral__c у Salesforce
+  description: REST API для створення та оновлення кастомного обʼєкта Referral__c у Salesforce
   version: 1.0.0
-  
+
 servers:
   - url: /services/apexrest/mobile/referral
     description: Salesforce Apex REST endpoint
+
 paths:
   /:
     post:
-      summary: Створити новий Referral__c
-      description: Створює запис Referral__c для відстеження реферального запрошення
+      summary: Create Referral
+      description: Створення нового запису Referral__c
       requestBody:
         required: true
         content:
@@ -20,18 +21,19 @@ paths:
               $ref: '#/components/schemas/ReferralRequest'
       responses:
         '200':
-          description: Успішне створення запису
+          description: Referral successfully created
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReferralResponse'
         '400':
-          description: Некоректні дані
+          description: Validation error
         '500':
-          description: Внутрішня помилка сервера
+          description: Internal server error
+
     put:
-      summary: Оновити існуючий Referral__c
-      description: Оновлює запис Referral__c по External_Id__c
+      summary: Update Referral
+      description: Оновлення існуючого Referral__c по referralExternalId
       requestBody:
         required: true
         content:
@@ -40,74 +42,76 @@ paths:
               $ref: '#/components/schemas/ReferralRequest'
       responses:
         '200':
-          description: Успішне оновлення запису
+          description: Referral successfully updated
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReferralResponse'
-        '400':
-          description: Некоректні дані
         '404':
-          description: Запис не знайдено
+          description: Referral not found
         '500':
-          description: Внутрішня помилка сервера
+          description: Internal server error
+
 components:
   schemas:
     ReferralRequest:
       type: object
       required:
-        - External_Id__c
-        - Sender__c
-        - Invited_User_FullName__c
-        - Invited_User_Phone__c
-        - Status__c
+        - referralExternalId
+        - senderContact
+        - status
+        - invitationDate
+        - invitedContactFullName
+        - invitedContactPhone
       properties:
-        Sender__c:
+        referralExternalId:
           type: string
-          description: Salesforce Id контакту, який відправив запрошення
-        Registered_User__c:
+          description: Унікальний зовнішній ідентифікатор Referral__c (External_Id__c)
+
+        senderContact:
           type: string
-          description: Salesforce Id контакту, який зареєструвався (опціонально)
-        Status__c:
+          description: Salesforce Id контакту, який відправив запрошення (Sender__c)
+
+        invitatedContact:
+          type: string
+          nullable: true
+          description: Salesforce Id контакту, який зареєструвався (Registered_User__c)
+
+        status:
           type: string
           enum:
             - Sent
             - Registered
             - Rejected
-          description: Статус запрошення
-        Registration_Date__c:
+          description: Статус реферального запрошення (Status__c)
+
+        invitationDate:
           type: string
           format: date-time
-          description: Дата та час реєстрації користувача (опціонально)
-        Invitation_Date__c:
+          description: Дата та час відправки запрошення (Invitation_Date__c)
+
+        registrationDate:
           type: string
           format: date-time
-          description: Дата та час відправки запрошення
-        Sender_Role__c:
+          nullable: true
+          description: Дата та час реєстрації користувача (Registration_Date__c)
+
+        invitedContactFullName:
           type: string
-          description: Роль контакту Sender__c
-        Registered_User_Role__c:
+          description: Повне імʼя запрошеного користувача (Invited_User_FullName__c)
+
+        invitedContactPhone:
           type: string
-          description: Роль контакту Registered_User__c
-        External_Id__c:
-          type: string
-          description: Унікальний зовнішній ідентифікатор запису
-        Invited_User_FullName__c:
-          type: string
-          description: Повне ім'я запрошеного користувача
-        Invited_User_Phone__c:
-          type: string
-          description: Телефон запрошеного користувача
-        Name:
-          type: string
-          description: Авто-номер (генерується системою)
+          description: Телефон запрошеного користувача (Invited_User_Phone__c)
+
     ReferralResponse:
       type: object
       properties:
         status:
           type: string
-          description: Статус відповіді
           example: success
+        referralId:
+          type: string
+          description: Salesforce Id створеного або оновленого Referral__c
         message:
           type: string
-          description: Повідомлення про результат

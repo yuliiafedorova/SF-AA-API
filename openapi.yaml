@@ -18,7 +18,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReferralRequest'
+              $ref: '#/components/schemas/ReferralCreateRequest'
       responses:
         '200':
           description: Referral successfully created
@@ -40,7 +40,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ReferralRequest'
+              $ref: '#/components/schemas/ReferralUpdateRequest'
       responses:
         '200':
           description: Referral successfully updated
@@ -55,17 +55,17 @@ paths:
 
 components:
   schemas:
-    ReferralRequest:
+    ReferralCreateRequest:
       type: object
       required:
         - referralExternalId
         - senderContactExternalId
+        - senderContactRole
         - status
         - invitationDate
         - invitedContactFullName
         - invitedContactPhone
         - invitedContactRole
-        - senderContactRole
       properties:
         referralExternalId:
           type: string
@@ -120,6 +120,34 @@ components:
             - Консультант
             - Фермер
           description: Роль запрошеного користувача
+
+    ReferralUpdateRequest:
+      type: object
+      required:
+        - referralExternalId
+        - status
+        - registrationDate
+      properties:
+        referralExternalId:
+          type: string
+          description: Унікальний зовнішній ідентифікатор Referral
+
+        status:
+          type: string
+          enum:
+            - Registered
+            - Rejected
+          description: Новий статус реферального запрошення
+
+        registrationDate:
+          type: string
+          format: date-time
+          description: Дата та час реєстрації користувача (обовʼязково для PUT)
+
+        registeredContactExternalId:
+          type: string
+          nullable: true
+          description: External Id контакту, який зареєструвався
 
     ReferralResponse:
       type: object

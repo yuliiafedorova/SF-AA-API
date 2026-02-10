@@ -64,6 +64,8 @@ components:
         - invitationDate
         - invitedContactFullName
         - invitedContactPhone
+        - invitedContactRole
+        - senderContactRole
       properties:
         referralExternalId:
           type: string
@@ -72,6 +74,13 @@ components:
         senderContactExternalId:
           type: string
           description: External Id контакту, який відправив запрошення
+
+        senderContactRole:
+          type: string
+          enum:
+            - Консультант
+            - Фермер
+          description: Роль контакту, який відправив запрошення
 
         registeredContactExternalId:
           type: string
@@ -104,6 +113,13 @@ components:
         invitedContactPhone:
           type: string
           description: Телефон запрошеного користувача
+
+        invitedContactRole:
+          type: string
+          enum:
+            - Консультант
+            - Фермер
+          description: Роль запрошеного користувача
 
     ReferralResponse:
       type: object

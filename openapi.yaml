@@ -1,17 +1,17 @@
 openapi: 3.0.3
 info:
   title: Referral API
-  description: REST API для створення та оновлення кастомного обʼєкта Referral__c у Salesforce
+  description: REST API для створення та оновлення обʼєкта Referral__c
   version: 1.0.0
 
 servers:
-  - url: /services/apexrest/mobile/referral
+  - url: /services/apexrest/mobile
     description: Salesforce Apex REST endpoint
 
 paths:
-  /:
+  /referral:
     post:
-      summary: Create Referral
+      summary: /referral
       description: Створення нового запису Referral__c
       requestBody:
         required: true
@@ -32,7 +32,7 @@ paths:
           description: Internal server error
 
     put:
-      summary: Update Referral
+      summary: /referral
       description: Оновлення існуючого Referral__c по referralExternalId
       requestBody:
         required: true
@@ -58,7 +58,7 @@ components:
       type: object
       required:
         - referralExternalId
-        - senderContact
+        - senderContactExternalId
         - status
         - invitationDate
         - invitedContactFullName
@@ -68,14 +68,14 @@ components:
           type: string
           description: Унікальний зовнішній ідентифікатор Referral__c (External_Id__c)
 
-        senderContact:
+        senderContactExternalId:
           type: string
-          description: Salesforce Id контакту, який відправив запрошення (Sender__c)
+          description: External Id контакту, який відправив запрошення (Sender__c)
 
-        invitatedContact:
+        registeredContactExternalId:
           type: string
           nullable: true
-          description: Salesforce Id контакту, який зареєструвався (Registered_User__c)
+          description: External Id контакту, який зареєструвався (Registered_User__c)
 
         status:
           type: string

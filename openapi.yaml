@@ -3,6 +3,7 @@ info:
   title: Referral API
   description: REST API для створення та оновлення кастомного об'єкта Referral__c у Salesforce
   version: 1.0.0
+  
 servers:
   - url: /services/apexrest/mobile/referral
     description: Salesforce Apex REST endpoint

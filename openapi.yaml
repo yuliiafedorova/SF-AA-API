@@ -81,12 +81,7 @@ components:
             - Консультант
             - Фермер
           description: Роль контакту, який відправив запрошення
-
-        registeredContactExternalId:
-          type: string
-          nullable: true
-          description: External Id контакту, який зареєструвався
-
+  
         status:
           type: string
           enum:
@@ -142,7 +137,7 @@ components:
         registrationDate:
           type: string
           format: date-time
-          description: Дата та час реєстрації користувача (обовʼязково для PUT)
+          description: Дата та час реєстрації користувача 
 
         registeredContactExternalId:
           type: string

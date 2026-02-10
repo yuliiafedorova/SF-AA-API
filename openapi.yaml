@@ -121,7 +121,6 @@ components:
       required:
         - referralExternalId
         - status
-        - registrationDate
       properties:
         referralExternalId:
           type: string

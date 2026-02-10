@@ -108,11 +108,15 @@ components:
     ReferralResponse:
       type: object
       properties:
-        status:
+        externalId:
           type: string
-          example: success
-        referralId:
-          type: string
-          description: Salesforce Id створеного або оновленого Referral__c
+          description: External Id Referral__c
+        success:
+          type: boolean
+          example: true
+        created:
+          type: boolean
+          description: true — якщо запис створено, false — якщо оновлено
         message:
           type: string
+          example: Referral created successfully

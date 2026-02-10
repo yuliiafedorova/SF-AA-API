@@ -6,12 +6,12 @@ info:
 
 servers:
   - url: /services/apexrest/mobile
-    description: Salesforce Apex REST endpoint
 
 paths:
   /referral:
     post:
-      summary: /referral
+      summary: Create Referral
+      tags: [Referral]
       description: Створення нового запису Referral__c
       requestBody:
         required: true
@@ -32,7 +32,8 @@ paths:
           description: Internal server error
 
     put:
-      summary: /referral
+      summary: Update Referral
+      tags: [Referral]
       description: Оновлення існуючого Referral__c по referralExternalId
       requestBody:
         required: true
@@ -66,16 +67,16 @@ components:
       properties:
         referralExternalId:
           type: string
-          description: Унікальний зовнішній ідентифікатор Referral__c (External_Id__c)
+          description: Унікальний зовнішній ідентифікатор Referral
 
         senderContactExternalId:
           type: string
-          description: External Id контакту, який відправив запрошення (Sender__c)
+          description: External Id контакту, який відправив запрошення
 
         registeredContactExternalId:
           type: string
           nullable: true
-          description: External Id контакту, який зареєструвався (Registered_User__c)
+          description: External Id контакту, який зареєструвався
 
         status:
           type: string
@@ -83,26 +84,26 @@ components:
             - Sent
             - Registered
             - Rejected
-          description: Статус реферального запрошення (Status__c)
+          description: Статус реферального запрошення
 
         invitationDate:
           type: string
           format: date-time
-          description: Дата та час відправки запрошення (Invitation_Date__c)
+          description: Дата та час відправки запрошення
 
         registrationDate:
           type: string
           format: date-time
           nullable: true
-          description: Дата та час реєстрації користувача (Registration_Date__c)
+          description: Дата та час реєстрації користувача
 
         invitedContactFullName:
           type: string
-          description: Повне імʼя запрошеного користувача (Invited_User_FullName__c)
+          description: Повне імʼя запрошеного користувача
 
         invitedContactPhone:
           type: string
-          description: Телефон запрошеного користувача (Invited_User_Phone__c)
+          description: Телефон запрошеного користувача
 
     ReferralResponse:
       type: object

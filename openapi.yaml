@@ -8,7 +8,7 @@ servers:
   - url: /services/apexrest/mobile
 
 paths:
-  /referral:
+  /referral/:
     post:
       summary: Create Referral
       tags: [Referral]

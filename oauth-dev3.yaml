@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Salesforce Dev3 OAuth API
+  version: 1.0.0
+  description: OAuth2 Client Credentials flow для отримання access token
+
+servers:
+  - url: https://agroarena--aadev3.sandbox.my.salesforce.com
+
+paths:
+  /services/oauth2/token:
+    post:
+      summary: Get OAuth Access Token
+      description: Отримання access token через Client Credentials flow
+      tags:
+        - OAuth
+
+      parameters:
+        - name: grant_type
+          in: query
+          required: true
+          schema:
+            type: string
+            example: client_credentials
+
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 3MVG9OjW2TAjFKUvhQhrXMSneVjR81GnoPw_YkyaepNm4UvfEPiOXnC6XKVUTkJzLmiqbCEwhbdr6QBm3YmzF
+
+        - name: client_secret
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 60A24A2F5E36CFB525413606A10BB2E4E84335EFD2B7D84BEACF875D38BB0449
+
+      responses:
+        "200":
+          description: Token received successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthResponse"
+
+components:
+  schemas:
+    OAuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: 00D7Y000000BEZ5!AQEA...
+
+        token_type:
+          type: string
+          example: Bearer
+
+        instance_url:
+          type: string
+          example: https://agroarena--aadev3.sandbox.my.salesforce.com
+
+        scope:
+          type: string
+          example: api
+
+        issued_at:
+          type: string
+          example: "1772817726747"
+
+        signature:
+          type: string

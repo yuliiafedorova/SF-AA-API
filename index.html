@@ -10,9 +10,27 @@
   <div id="swagger-ui"></div>
 
   <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+
   <script>
     SwaggerUIBundle({
-      url: "openapi.yaml",
+      urls: [
+        {
+          url: "referral-api.yaml",
+          name: "Referral API"
+        },
+        {
+          url: "oauth-dev1.yaml",
+          name: "OAuth Dev1"
+        },
+        {
+          url: "oauth-dev3.yaml",
+          name: "OAuth Dev3"
+        },
+        {
+          url: "database-api.yaml",
+          name: "Database API"
+        }
+      ],
       dom_id: "#swagger-ui",
       deepLinking: true,
       presets: [

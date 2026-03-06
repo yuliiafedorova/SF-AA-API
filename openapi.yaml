@@ -1,74 +1,160 @@
 openapi: 3.0.3
 info:
-  title: Salesforce Dev31 OAuth API
+  title: Referral API
+  description: REST API для створення та оновлення обʼєкта Referral__c
   version: 1.0.0
-  description: OAuth2 Client Credentials flow для отримання access token
 
 servers:
-  - url: https://agroarena--aadev1.sandbox.my.salesforce.com
+  - url: /services/apexrest/mobile
 
 paths:
-  /services/oauth2/token:
+  /referral/:
     post:
-      summary: Get OAuth Access Token
-      description: Отримання access token через Client Credentials flow
-      tags:
-        - OAuth
-
-      parameters:
-        - name: grant_type
-          in: query
-          required: true
-          schema:
-            type: string
-            example: client_credentials
-
-        - name: client_id
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 3MVG9uAc45HBYUrhU3wghpPjGJ0DFpf95KJ8jypuWeKbLcpDT1UxUq3Gfo7HX3L1a3kDBqDitDeIbRLImrIp0
-
-        - name: client_secret
-          in: query
-          required: true
-          schema:
-            type: string
-            example: 05843203A77C36C85FF3E24B1AADBBE8489F32EA2037AA97E0D2863301A71BAC
-
+      summary: Create Referral
+      tags: [Referral]
+      description: Створення нового запису Referral__c
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferralCreateRequest'
       responses:
-        "200":
-          description: Token received successfully
+        '200':
+          description: Referral successfully created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OAuthResponse"
+                $ref: '#/components/schemas/ReferralResponse'
+        '400':
+          description: Validation error
+        '500':
+          description: Internal server error
+
+    put:
+      summary: Update Referral
+      tags: [Referral]
+      description: Оновлення існуючого Referral__c по referralExternalId
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReferralUpdateRequest'
+      responses:
+        '200':
+          description: Referral successfully updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReferralResponse'
+        '404':
+          description: Referral not found
+        '500':
+          description: Internal server error
 
 components:
   schemas:
-    OAuthResponse:
+    ReferralCreateRequest:
+      type: object
+      required:
+        - referralExternalId
+        - senderContactExternalId
+        - senderContactRole
+        - status
+        - invitationDate
+        - invitedContactFullName
+        - invitedContactPhone
+        - invitedContactRole
+      properties:
+        referralExternalId:
+          type: string
+          description: Унікальний зовнішній ідентифікатор Referral
+
+        senderContactExternalId:
+          type: string
+          description: External Id контакту, який відправив запрошення
+
+        senderContactRole:
+          type: string
+          enum:
+            - Консультант
+            - Фермер
+          description: Роль контакту, який відправив запрошення
+  
+        status:
+          type: string
+          enum:
+            - Sent
+            - Registered
+            - Rejected
+          description: Статус реферального запрошення
+
+        invitationDate:
+          type: string
+          format: date-time
+          description: Дата та час відправки запрошення
+
+        registrationDate:
+          type: string
+          format: date-time
+          nullable: true
+          description: Дата та час реєстрації користувача
+
+        invitedContactFullName:
+          type: string
+          description: Повне імʼя запрошеного користувача
+
+        invitedContactPhone:
+          type: string
+          description: Телефон запрошеного користувача
+
+        invitedContactRole:
+          type: string
+          enum:
+            - Консультант
+            - Фермер
+          description: Роль запрошеного користувача
+
+    ReferralUpdateRequest:
+      type: object
+      required:
+        - referralExternalId
+        - status
+      properties:
+        referralExternalId:
+          type: string
+          description: Унікальний зовнішній ідентифікатор Referral
+
+        status:
+          type: string
+          enum:
+            - Registered
+            - Rejected
+          description: Новий статус реферального запрошення
+
+        registrationDate:
+          type: string
+          format: date-time
+          description: Дата та час реєстрації користувача 
+
+        registeredContactExternalId:
+          type: string
+          nullable: true
+          description: External Id контакту, який зареєструвався
+
+    ReferralResponse:
       type: object
       properties:
-        access_token:
+        externalId:
           type: string
-          example: 00D7Y000000BEZ5!AQEA...
-
-        token_type:
+          description: External Id Referral__c
+        success:
+          type: boolean
+          example: true
+        created:
+          type: boolean
+          description: true — якщо запис створено, false — якщо оновлено
+        message:
           type: string
-          example: Bearer
-
-        instance_url:
-          type: string
-          example: https://agroarena--aadev1.sandbox.my.salesforce.com
-
-        scope:
-          type: string
-          example: api
-
-        issued_at:
-          type: string
-          example: "1772817726747"
-
-        signature:
-          type: string
+          example: Referral created successfully

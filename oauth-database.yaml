@@ -1,0 +1,74 @@
+openapi: 3.0.3
+info:
+  title: Salesforce Dev31 OAuth API
+  version: 1.0.0
+  description: OAuth2 Client Credentials flow для отримання access token
+
+servers:
+  - url: https://agroarena--database.sandbox.my.salesforce.com
+
+paths:
+  /services/oauth2/token:
+    post:
+      summary: Get OAuth Access Token
+      description: Отримання access token через Client Credentials flow
+      tags:
+        - OAuth
+
+      parameters:
+        - name: grant_type
+          in: query
+          required: true
+          schema:
+            type: string
+            example: client_credentials
+
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 3MVG9gW1gj2XrUw0h0G8jNKAvSvuQ4H7xCNMdIDhhSQVrJ.NnIyscg1ynvbxMUj5w52YnSpwVJopdS0BW6clu
+
+        - name: client_secret
+          in: query
+          required: true
+          schema:
+            type: string
+            example: BD0C3A479C0B4B3BB86DE0DCE1D1B449BC2FDD5C9845F600F1F8C505D78A6E43
+
+      responses:
+        "200":
+          description: Token received successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OAuthResponse"
+
+components:
+  schemas:
+    OAuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: 00D7Y000000BEZ5!AQEA...
+
+        token_type:
+          type: string
+          example: Bearer
+
+        instance_url:
+          type: string
+          example: https://agroarena--database.sandbox.my.salesforce.com
+
+        scope:
+          type: string
+          example: api
+
+        issued_at:
+          type: string
+          example: "1772817726747"
+
+        signature:
+          type: string

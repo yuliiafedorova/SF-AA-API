@@ -28,14 +28,14 @@ paths:
           required: true
           schema:
             type: string
-            example: 3MVG9uAc45HBYUrhU3wghpPjGJ0DFpf95KJ8jypuWeKbLcpDT1UxUq3Gfo7HX3L1a3kDBqDitDeIbRLImrIp0
+            example: test
 
         - name: client_secret
           in: query
           required: true
           schema:
             type: string
-            example: 05843203A77C36C85FF3E24B1AADBBE8489F32EA2037AA97E0D2863301A71BAC
+            example: test
 
       responses:
         "200":

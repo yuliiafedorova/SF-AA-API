@@ -5,7 +5,7 @@ info:
   description: OAuth2 Client Credentials flow для отримання access token
 
 servers:
-  - url: https://agroarena--aadev3.sandbox.my.salesforce.com
+  - url: /services/oauth2/token
 
 paths:
   /services/oauth2/token:
@@ -28,14 +28,14 @@ paths:
           required: true
           schema:
             type: string
-            example: test
+            example: ferd
 
         - name: client_secret
           in: query
           required: true
           schema:
             type: string
-            example: test
+            example: fhgn
 
       responses:
         "200":
